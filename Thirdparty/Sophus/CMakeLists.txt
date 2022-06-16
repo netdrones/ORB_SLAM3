@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4)
-project(Sophus VERSION 1.1.0)
+project(sophus VERSION 1.1.0)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -38,30 +38,30 @@ find_package(Eigen3 3.3.0 REQUIRED)
 add_library(sophus INTERFACE)
 
 set(SOPHUS_HEADER_FILES
-  sophus/average.hpp
-  sophus/common.hpp
-  sophus/geometry.hpp
-  sophus/interpolate.hpp
-  sophus/interpolate_details.hpp
-  sophus/num_diff.hpp
-  sophus/rotation_matrix.hpp
-  sophus/rxso2.hpp
-  sophus/rxso3.hpp
-  sophus/se2.hpp
-  sophus/se3.hpp
-  sophus/sim2.hpp
-  sophus/sim3.hpp
-  sophus/sim_details.hpp
-  sophus/so2.hpp
-  sophus/so3.hpp
-  sophus/types.hpp
-  sophus/velocities.hpp
-  sophus/formatstring.hpp
+        sophus/average.hpp
+        sophus/common.hpp
+        sophus/geometry.hpp
+        sophus/interpolate.hpp
+        sophus/interpolate_details.hpp
+        sophus/num_diff.hpp
+        sophus/rotation_matrix.hpp
+        sophus/rxso2.hpp
+        sophus/rxso3.hpp
+        sophus/se2.hpp
+        sophus/se3.hpp
+        sophus/sim2.hpp
+        sophus/sim3.hpp
+        sophus/sim_details.hpp
+        sophus/so2.hpp
+        sophus/so3.hpp
+        sophus/types.hpp
+        sophus/velocities.hpp
+        sophus/formatstring.hpp
 )
 
 set(SOPHUS_OTHER_FILES
-  sophus/test_macros.hpp
-  sophus/example_ensure_handler.cpp
+        sophus/test_macros.hpp
+        sophus/example_ensure_handler.cpp
 )
 
 if(MSVC)
@@ -112,7 +112,7 @@ endif()
 # Export package for use from the build tree
 set(SOPHUS_CMAKE_EXPORT_DIR ${CMAKE_INSTALL_DATADIR}/sophus/cmake)
 
-set_target_properties(sophus PROPERTIES EXPORT_NAME Sophus)
+set_target_properties(sophus PROPERTIES EXPORT_NAME sophus)
 
 install(TARGETS sophus EXPORT SophusTargets)
 install(EXPORT SophusTargets
@@ -121,10 +121,10 @@ install(EXPORT SophusTargets
 )
 
 export(TARGETS sophus NAMESPACE Sophus:: FILE SophusTargets.cmake)
-export(PACKAGE Sophus)
+export(PACKAGE sophus)
 
 configure_package_config_file(
-  SophusConfig.cmake.in
+        SophusConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/SophusConfig.cmake
   INSTALL_DESTINATION ${SOPHUS_CMAKE_EXPORT_DIR}
   NO_CHECK_REQUIRED_COMPONENTS_MACRO

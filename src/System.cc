@@ -21,9 +21,12 @@
 #include "System.h"
 #include "Converter.h"
 #include <thread>
+#ifdef HAS_VIEWER
 #include <pangolin/pangolin.h>
+#endif
 #include <iomanip>
-#include <openssl/md5.h>
+//#include <openssl/md5.h>
+#include "md5.h"
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -40,7 +43,11 @@ Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
 System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
                const bool bUseViewer, const int initFr, const string &strSequence):
-    mSensor(sensor), mpViewer(static_cast<Viewer*>(NULL)), mbReset(false), mbResetActiveMap(false),
+    mSensor(sensor),
+#if defined(WITH_VIEWER)
+    mpViewer(static_cast<Viewer*>(NULL)),
+#endif // WITH_VIEWER
+    mbReset(false), mbResetActiveMap(false),
     mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false), mbShutDown(false)
 {
     // Output welcome message
@@ -182,14 +189,21 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         mpAtlas->SetInertialSensor();
 
     //Create Drawers. These are used by the Viewer
+#ifdef WITH_VIEWER
     mpFrameDrawer = new FrameDrawer(mpAtlas);
     mpMapDrawer = new MapDrawer(mpAtlas, strSettingsFile, settings_);
+#endif // WITH_VIEWER
 
     //Initialize the Tracking thread
     //(it will live in the main thread of execution, the one that called this constructor)
     cout << "Seq. Name: " << strSequence << endl;
+#ifdef WITH_VIEWER
     mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
                              mpAtlas, mpKeyFrameDatabase, strSettingsFile, mSensor, settings_, strSequence);
+#else
+    mpTracker = new Tracking(this, mpVocabulary,
+                             mpAtlas, mpKeyFrameDatabase, strSettingsFile, mSensor, settings_, strSequence);
+#endif // WITH_VIEWER
 
     //Initialize the Local Mapping thread and launch
     mpLocalMapper = new LocalMapping(this, mpAtlas, mSensor==MONOCULAR || mSensor==IMU_MONOCULAR,
@@ -225,6 +239,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //usleep(10*1000*1000);
 
+#if defined(WITH_VIEWER)
     //Initialize the Viewer thread and launch
     if(bUseViewer)
     //if(false) // TODO
@@ -235,7 +250,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         mpLoopCloser->mpViewer = mpViewer;
         mpViewer->both = mpFrameDrawer->both;
     }
-
+#endif // WITH_VIEWER
     // Fix verbosity
     Verbose::SetTh(Verbose::VERBOSITY_QUIET);
 
@@ -1351,7 +1366,7 @@ bool System::isLost()
         return false;
     else
     {
-        if ((mpTracker->mState==Tracking::LOST)) //||(mpTracker->mState==Tracking::RECENTLY_LOST))
+        if (mpTracker->mState==Tracking::LOST) //||(mpTracker->mState==Tracking::RECENTLY_LOST))
             return true;
         else
             return false;
@@ -1523,12 +1538,12 @@ string System::CalculateCheckSum(string filename, int type)
     }
 
     MD5_CTX md5Context;
-    char buffer[1024];
+    unsigned char buffer[1024];
 
     MD5_Init (&md5Context);
-    while ( int count = f.readsome(buffer, sizeof(buffer)))
+    while ( int count = f.readsome((char *)buffer, sizeof(buffer)))
     {
-        MD5_Update(&md5Context, buffer, count);
+        MD5_Update(&md5Context, &buffer[0], count);
     }
 
     f.close();

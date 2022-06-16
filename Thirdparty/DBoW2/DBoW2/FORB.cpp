@@ -13,7 +13,11 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#if defined(__GCC__)
 #include <stdint-gcc.h>
+#else
+#include <cstdint>
+#endif // defined(__GCC__)
 
 #include "FORB.h"
 

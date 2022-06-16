@@ -25,7 +25,9 @@
 
 #include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
 
+#if defined(__GCC__)
 #include<stdint-gcc.h>
+#endif // defined(__GCC__)
 
 using namespace std;
 

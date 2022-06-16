@@ -58,8 +58,18 @@ class Tracking
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Atlas* pAtlas,
-             KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor, Settings* settings, const string &_nameSeq=std::string());
+    Tracking(System* pSys,
+             ORBVocabulary* pVoc,
+#ifdef WITH_VIEWER
+             FrameDrawer* pFrameDrawer,
+             MapDrawer* pMapDrawer,
+#endif // WITH_VIEWER
+             Atlas* pAtlas,
+             KeyFrameDatabase* pKFDB,
+             const string &strSettingPath,
+             const int sensor,
+             Settings* settings,
+             const string &_nameSeq=std::string());
 
     ~Tracking();
 
@@ -77,7 +87,9 @@ public:
 
     void SetLocalMapper(LocalMapping* pLocalMapper);
     void SetLoopClosing(LoopClosing* pLoopClosing);
+#ifdef WITH_VIEWER
     void SetViewer(Viewer* pViewer);
+#endif // WITH_VIEWER
     void SetStepByStep(bool bSet);
     bool GetStepByStep();
 
@@ -276,11 +288,13 @@ protected:
     
     // System
     System* mpSystem;
-    
+
+#ifdef WITH_VIEWER
     //Drawers
     Viewer* mpViewer;
     FrameDrawer* mpFrameDrawer;
     MapDrawer* mpMapDrawer;
+#endif // WITH_VIEWER
     bool bStepByStep;
 
     //Atlas

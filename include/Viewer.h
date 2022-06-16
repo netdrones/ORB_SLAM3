@@ -20,6 +20,8 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
+#ifdef WITH_VIEWER
+
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
 #include "Tracking.h"
@@ -36,6 +38,7 @@ class FrameDrawer;
 class MapDrawer;
 class System;
 class Settings;
+
 
 class Viewer
 {
@@ -96,9 +99,9 @@ private:
 
 };
 
+
 }
 
+#endif // WITH_VIEWER
 
 #endif // VIEWER_H
-	
-

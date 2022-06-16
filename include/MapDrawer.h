@@ -20,6 +20,8 @@
 #ifndef MAPDRAWER_H
 #define MAPDRAWER_H
 
+#ifdef HAS_VIEWER
+
 #include"Atlas.h"
 #include"MapPoint.h"
 #include"KeyFrame.h"
@@ -75,5 +77,7 @@ private:
 };
 
 } //namespace ORB_SLAM
+
+#endif // HAS_VIEWER
 
 #endif // MAPDRAWER_H
