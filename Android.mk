@@ -2,12 +2,14 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+# orbslam3.so
+
 LOCAL_CPP_EXTENSION := .cpp .cc .ipp
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH) \
-    $(LOCAL_PATH)/include \
-    $(LOCAL_PATH)/include/CameraModels \
+    $(LOCAL_PATH)/include/ORB_SLAM3 \
+    $(LOCAL_PATH)/include/ORB_SLAM3/CameraModels \
     $(LOCAL_PATH)/../include \
     $(LOCAL_PATH)/../include/eigen3 \
     $(LOCAL_PATH)/Thirdparty/Sophus \
@@ -82,7 +84,7 @@ LOCAL_SRC_FILES += \
     Thirdparty/g2o/g2o/stuff/timeutil.cpp \
     Thirdparty/g2o/g2o/stuff/os_specific.c \
     Thirdparty/g2o/g2o/stuff/string_tools.cpp \
-    Thirdparty/g2o/g2o/stuff/property.cpp \
+    Thirdparty/g2o/g2o/stuff/property.cpp
 
 # LOCAL_SRC_FILES += \
 #     ../boost/include/boost-1_74/boost/archive/impl/text_iarchive_impl.ipp \
@@ -113,6 +115,13 @@ LOCAL_STATIC_LIBRARIES += \
     boost_serialization \
     opencv_core \
     opencv_features2d \
+
+LOCAL_EXPORT_C_INCLUDES := \
+    $(LOCAL_PATH) \
+    $(LOCAL_PATH)/include/ORB_SLAM3/CameraModels \
+    $(LOCAL_PATH)/../include/eigen3 \
+    $(LOCAL_PATH)/Thirdparty/Sophus \
+    $(LOCAL_PATH)/include
 
 LOCAL_EXPORT_LDLIBS := \
     -llog \

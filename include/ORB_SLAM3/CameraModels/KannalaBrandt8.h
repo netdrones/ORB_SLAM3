@@ -23,8 +23,7 @@
 #include <assert.h>
 
 #include "GeometricCamera.h"
-
-#include "TwoViewReconstruction.h"
+#include "../TwoViewReconstruction.h"
 
 namespace ORB_SLAM3 {
     class KannalaBrandt8 : public GeometricCamera {

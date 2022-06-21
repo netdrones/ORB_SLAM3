@@ -82,36 +82,36 @@ add_library(${PROJECT_NAME} SHARED
         src/TwoViewReconstruction.cc
         src/Config.cc
         src/Settings.cc
-        include/System.h
-        include/Tracking.h
-        include/LocalMapping.h
-        include/LoopClosing.h
-        include/ORBextractor.h
-        include/ORBmatcher.h
-        include/FrameDrawer.h
-        include/Converter.h
-        include/MapPoint.h
-        include/KeyFrame.h
-        include/Atlas.h
-        include/Map.h
-        include/MapDrawer.h
-        include/Optimizer.h
-        include/Frame.h
-        include/KeyFrameDatabase.h
-        include/Sim3Solver.h
-        include/Viewer.h
-        include/ImuTypes.h
-        include/G2oTypes.h
+        include/ORB_SLAM3/System.h
+        include/ORB_SLAM3/Tracking.h
+        include/ORB_SLAM3/LocalMapping.h
+        include/ORB_SLAM3/LoopClosing.h
+        include/ORB_SLAM3/ORBextractor.h
+        include/ORB_SLAM3/ORBmatcher.h
+        include/ORB_SLAM3/FrameDrawer.h
+        include/ORB_SLAM3/Converter.h
+        include/ORB_SLAM3/MapPoint.h
+        include/ORB_SLAM3/KeyFrame.h
+        include/ORB_SLAM3/Atlas.h
+        include/ORB_SLAM3/Map.h
+        include/ORB_SLAM3/MapDrawer.h
+        include/ORB_SLAM3/Optimizer.h
+        include/ORB_SLAM3/Frame.h
+        include/ORB_SLAM3/KeyFrameDatabase.h
+        include/ORB_SLAM3/Sim3Solver.h
+        include/ORB_SLAM3/Viewer.h
+        include/ORB_SLAM3/ImuTypes.h
+        include/ORB_SLAM3/G2oTypes.h
         include/CameraModels/GeometricCamera.h
         include/CameraModels/Pinhole.h
         include/CameraModels/KannalaBrandt8.h
-        include/OptimizableTypes.h
-        include/MLPnPsolver.h
-        include/GeometricTools.h
-        include/TwoViewReconstruction.h
-        include/SerializationUtils.h
-        include/Config.h
-        include/Settings.h)
+        include/ORB_SLAM3/OptimizableTypes.h
+        include/ORB_SLAM3/MLPnPsolver.h
+        include/ORB_SLAM3/GeometricTools.h
+        include/ORB_SLAM3/TwoViewReconstruction.h
+        include/ORB_SLAM3/SerializationUtils.h
+        include/ORB_SLAM3/Config.h
+        include/ORB_SLAM3/Settings.h)
 
 add_subdirectory(Thirdparty/g2o)
 
