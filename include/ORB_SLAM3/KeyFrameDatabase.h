@@ -46,6 +46,7 @@ class Map;
 
 class KeyFrameDatabase
 {
+#if defined(WITH_BOOST_SERIALIZATION) && WITH_BOOST_SERIALIZATION
     friend class boost::serialization::access;
 
     template<class Archive>
@@ -53,6 +54,7 @@ class KeyFrameDatabase
     {
         ar & mvBackupInvertedFileId;
     }
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

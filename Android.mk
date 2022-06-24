@@ -4,7 +4,7 @@ include $(CLEAR_VARS)
 
 # orbslam3.so
 
-LOCAL_CPP_EXTENSION := .cpp .cc .ipp
+LOCAL_CPP_EXTENSION := .cpp .cc
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH) \
@@ -36,7 +36,7 @@ LOCAL_SRC_FILES := \
     src/G2oTypes.cc \
     src/CameraModels/Pinhole.cpp \
     src/CameraModels/KannalaBrandt8.cpp \
-    src/OptimizableTypes.cpp \ \
+    src/OptimizableTypes.cpp \
     src/MLPnPsolver.cpp \
     src/GeometricTools.cc \
     src/TwoViewReconstruction.cc \
