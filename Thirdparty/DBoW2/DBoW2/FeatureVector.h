@@ -15,8 +15,10 @@
 #include <vector>
 #include <iostream>
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/map.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 namespace DBoW2 {
 
@@ -24,12 +26,15 @@ namespace DBoW2 {
 class FeatureVector: 
   public std::map<NodeId, std::vector<unsigned int> >
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive& ar, const int version)
     {
         ar & boost::serialization::base_object<std::map<NodeId, std::vector<unsigned int> > >(*this);
     }
+#endif // WITH_BOOST_SERIALIZATION
+
 
 public:
 

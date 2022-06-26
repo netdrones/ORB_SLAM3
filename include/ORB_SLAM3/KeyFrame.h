@@ -34,9 +34,11 @@
 
 #include <mutex>
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 
 namespace ORB_SLAM3
@@ -51,6 +53,7 @@ class GeometricCamera;
 
 class KeyFrame
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
 
     template<class Archive>
@@ -191,6 +194,8 @@ class KeyFrame
         ar & boost::serialization::make_array(mOwb.data(), mOwb.size());
         ar & mbHasVelocity;
     }
+
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

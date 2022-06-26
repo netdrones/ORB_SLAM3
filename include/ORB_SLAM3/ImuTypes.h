@@ -31,8 +31,10 @@
 
 #include "SerializationUtils.h"
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 namespace ORB_SLAM3
 {
@@ -61,6 +63,7 @@ public:
 //IMU biases (gyro and accelerometer)
 class Bias
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
@@ -73,6 +76,7 @@ class Bias
         ar & bwy;
         ar & bwz;
     }
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     Bias():bax(0),bay(0),baz(0),bwx(0),bwy(0),bwz(0){}
@@ -91,6 +95,7 @@ public:
 //IMU calibration (Tbc, Tcb, noise)
 class Calib
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
@@ -103,6 +108,7 @@ class Calib
 
         ar & mbIsSet;
     }
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
 
@@ -142,6 +148,7 @@ public:
 //Preintegration of Imu Measurements
 class Preintegrated
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
@@ -167,6 +174,7 @@ class Preintegrated
         ar & boost::serialization::make_array(db.data(), db.size());
         ar & mvMeasurements;
     }
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -230,6 +238,7 @@ private:
 
     struct integrable
     {
+#if defined(WITH_BOOST_SERIALIZATION)
         template<class Archive>
         void serialize(Archive & ar, const unsigned int version)
         {
@@ -237,6 +246,7 @@ private:
             ar & boost::serialization::make_array(w.data(), w.size());
             ar & t;
         }
+#endif // WITH_BOOST_SERIALIZATION
 
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         integrable(){}

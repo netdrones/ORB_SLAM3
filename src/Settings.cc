@@ -166,7 +166,9 @@ namespace ORB_SLAM3 {
 
         readORB(fSettings);
         cout << "\t-Loaded ORB settings" << endl;
+#if defined(WITH_VIEWER) && WITH_VIEWER
         readViewer(fSettings);
+#endif
         cout << "\t-Loaded viewer settings" << endl;
         readLoadAndSave(fSettings);
         cout << "\t-Loaded Atlas settings" << endl;
@@ -453,6 +455,7 @@ namespace ORB_SLAM3 {
     void Settings::readViewer(cv::FileStorage &fSettings) {
         bool found;
 
+#if defined(WITH_VIEWER) && WITH_VIEWER
         keyFrameSize_ = readParameter<float>(fSettings,"Viewer.KeyFrameSize",found);
         keyFrameLineWidth_ = readParameter<float>(fSettings,"Viewer.KeyFrameLineWidth",found);
         graphLineWidth_ = readParameter<float>(fSettings,"Viewer.GraphLineWidth",found);
@@ -467,6 +470,7 @@ namespace ORB_SLAM3 {
 
          if(!found)
             imageViewerScale_ = 1.0f;
+#endif // WITH_VIEWER
     }
 
     void Settings::readLoadAndSave(cv::FileStorage &fSettings) {

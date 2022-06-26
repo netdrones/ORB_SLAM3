@@ -29,9 +29,11 @@
 #include "ORBVocabulary.h"
 #include "Map.h"
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/list.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 #include<mutex>
 
@@ -46,7 +48,7 @@ class Map;
 
 class KeyFrameDatabase
 {
-#if defined(WITH_BOOST_SERIALIZATION) && WITH_BOOST_SERIALIZATION
+#if defined(WITH_BOOST_SERIALIZATION_SERIALIZATION) && WITH_BOOST_SERIALIZATION_SERIALIZATION
     friend class boost::serialization::access;
 
     template<class Archive>
@@ -54,7 +56,7 @@ class KeyFrameDatabase
     {
         ar & mvBackupInvertedFileId;
     }
-#endif // WITH_BOOST_SERIALIZATION
+#endif // WITH_BOOST_SERIALIZATION_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

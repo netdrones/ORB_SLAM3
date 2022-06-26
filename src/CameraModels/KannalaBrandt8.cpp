@@ -18,7 +18,9 @@
 
 #include "KannalaBrandt8.h"
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/export.hpp>
+#endif
 
 //BOOST_CLASS_EXPORT_IMPLEMENT(ORB_SLAM3::KannalaBrandt8)
 

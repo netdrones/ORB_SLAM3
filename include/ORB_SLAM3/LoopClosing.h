@@ -28,7 +28,9 @@
 
 #include "KeyFrameDatabase.h"
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/algorithm/string.hpp>
+#endif
 #include <thread>
 #include <mutex>
 #include "Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h"

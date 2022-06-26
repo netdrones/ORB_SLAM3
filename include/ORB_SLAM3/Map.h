@@ -31,7 +31,9 @@ typedef unsigned char GLubyte;
 #endif
 #include <mutex>
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/base_object.hpp>
+#endif
 
 
 namespace ORB_SLAM3
@@ -44,6 +46,7 @@ class KeyFrameDatabase;
 
 class Map
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
 
     template<class Archive>
@@ -70,6 +73,7 @@ class Map
         ar & mbIMU_BA1;
         ar & mbIMU_BA2;
     }
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

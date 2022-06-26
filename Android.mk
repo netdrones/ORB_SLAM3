@@ -3,7 +3,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 # orbslam3.so
-
 LOCAL_CPP_EXTENSION := .cpp .cc
 
 LOCAL_C_INCLUDES := \
@@ -86,9 +85,6 @@ LOCAL_SRC_FILES += \
     Thirdparty/g2o/g2o/stuff/string_tools.cpp \
     Thirdparty/g2o/g2o/stuff/property.cpp
 
-# LOCAL_SRC_FILES += \
-#     ../boost/include/boost-1_74/boost/archive/impl/text_iarchive_impl.ipp \
-
 LOCAL_CFLAGS += \
     -Wno-undef \
     -Wno-unused-parameter \
@@ -103,18 +99,15 @@ LOCAL_CFLAGS += \
     -Wno-unused-function \
     -Wno-unused-but-set-variable \
     -Wno-missing-prototypes \
+	-DANDROID
 
-LOCAL_SHARED_LIBRARIES += \
+LOCAL_STATIC_LIBRARIES += \
     opencv_core \
     opencv_features2d \
     opencv_imgproc \
     opencv_calib3d \
 
-LOCAL_STATIC_LIBRARIES += \
-    boost_system \
-    boost_serialization \
-    opencv_core \
-    opencv_features2d \
+LOCAL_LDLIBS := -llog
 
 LOCAL_EXPORT_C_INCLUDES := \
     $(LOCAL_PATH) \

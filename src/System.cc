@@ -25,8 +25,9 @@
 #include <pangolin/pangolin.h>
 #endif
 #include <iomanip>
-//#include <openssl/md5.h>
 #include "md5.h"
+#include "orb_log.h"
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -35,6 +36,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 namespace ORB_SLAM3
 {
@@ -43,6 +45,7 @@ Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
 System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
                const bool bUseViewer, const int initFr, const string &strSequence):
+    initialized_(false),
     mSensor(sensor),
 #if defined(WITH_VIEWER)
     mpViewer(static_cast<Viewer*>(NULL)),
@@ -50,6 +53,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mbReset(false), mbResetActiveMap(false),
     mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false), mbShutDown(false)
 {
+#ifndef ANDROID
     // Output welcome message
     cout << endl <<
     "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza." << endl <<
@@ -72,13 +76,16 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         cout << "Stereo-Inertial" << endl;
     else if(mSensor==IMU_RGBD)
         cout << "RGB-D-Inertial" << endl;
+#endif // ANDROID
+
+    LOGD("@@@ ORB_SLAM3::Systems");
 
     //Check settings file
     cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
     if(!fsSettings.isOpened())
     {
-       cerr << "Failed to open settings file at: " << strSettingsFile << endl;
-       exit(-1);
+        LOGE("failed to open settings file at: %s", strSettingsFile.c_str());
+        return;
     }
 
     cv::FileNode node = fsSettings["File.version"];
@@ -119,54 +126,52 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     if(mStrLoadAtlasFromFile.empty())
     {
         //Load ORB Vocabulary
-        cout << endl << "Loading ORB Vocabulary. This could take a while..." << endl;
+        LOGD("Loading ORB Vocabulary. This could take a while..." );
 
         mpVocabulary = new ORBVocabulary();
         bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
         if(!bVocLoad)
         {
-            cerr << "Wrong path to vocabulary. " << endl;
-            cerr << "Falied to open at: " << strVocFile << endl;
-            exit(-1);
+            LOGE("Wrong path to vocabulary. Failed to open at: %s", strVocFile.c_str());
+            return;
         }
-        cout << "Vocabulary loaded!" << endl << endl;
+        LOGD("Vocabulary loaded!");
 
         //Create KeyFrame Database
         mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
         //Create the Atlas
-        cout << "Initialization of Atlas from scratch " << endl;
+        LOGD("Initialization of Atlas from scratch ");
         mpAtlas = new Atlas(0);
     }
     else
     {
         //Load ORB Vocabulary
-        cout << endl << "Loading ORB Vocabulary. This could take a while..." << endl;
+        LOGD("Loading ORB Vocabulary. This could take a while...");
 
         mpVocabulary = new ORBVocabulary();
         bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
         if(!bVocLoad)
         {
-            cerr << "Wrong path to vocabulary. " << endl;
-            cerr << "Falied to open at: " << strVocFile << endl;
-            exit(-1);
+            LOGE("Wrong path to vocabulary. Falied to open at: %s", strVocFile.c_str());
+            return;
         }
-        cout << "Vocabulary loaded!" << endl << endl;
+        LOGD("Vocabulary loaded!");
 
         //Create KeyFrame Database
         mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
-        cout << "Load File" << endl;
+        LOGD("Load File");
 
         // Load the file with an earlier session
         //clock_t start = clock();
-        cout << "Initialization of Atlas from file: " << mStrLoadAtlasFromFile << endl;
+        LOGD("Initialization of Atlas from file: %s",  mStrLoadAtlasFromFile.c_str());
         bool isRead = LoadAtlas(FileType::BINARY_FILE);
 
         if(!isRead)
         {
-            cout << "Error to load the file, please try with other session file or vocabulary file" << endl;
-            exit(-1);
+            LOGE("Error to load the file, please try with other session file or vocabulary file");
+            return;
         }
         //mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
@@ -254,13 +259,14 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     // Fix verbosity
     Verbose::SetTh(Verbose::VERBOSITY_QUIET);
 
+    initialized_ = true;
 }
 
 Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 {
     if(mSensor!=STEREO && mSensor!=IMU_STEREO)
     {
-        cerr << "ERROR: you called TrackStereo but input sensor was not set to Stereo nor Stereo-Inertial." << endl;
+        LOGE("ERROR: you called TrackStereo but input sensor was not set to Stereo nor Stereo-Inertial.");
         exit(-1);
     }
 
@@ -344,7 +350,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const
 {
     if(mSensor!=RGBD  && mSensor!=IMU_RGBD)
     {
-        cerr << "ERROR: you called TrackRGBD but input sensor was not set to RGBD." << endl;
+        LOGE("ERROR: you called TrackRGBD but input sensor was not set to RGBD.");
         exit(-1);
     }
 
@@ -422,7 +428,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
 
     if(mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR)
     {
-        cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular nor Monocular-Inertial." << endl;
+        LOGE("ERROR: you called TrackMonocular but input sensor was not set to Monocular nor Monocular-Inertial.");
         exit(-1);
     }
 
@@ -534,7 +540,7 @@ void System::Shutdown()
         mbShutDown = true;
     }
 
-    cout << "Shutdown" << endl;
+    LOGD("Shutdown");
 
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
@@ -583,10 +589,10 @@ bool System::isShutDown() {
 
 void System::SaveTrajectoryTUM(const string &filename)
 {
-    cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
+    LOGD("Saving camera trajectory to %s ...", filename.c_str());
     if(mSensor==MONOCULAR)
     {
-        cerr << "ERROR: SaveTrajectoryTUM cannot be used for monocular." << endl;
+        LOGE("ERROR: SaveTrajectoryTUM cannot be used for monocular.");
         return;
     }
 
@@ -643,7 +649,7 @@ void System::SaveTrajectoryTUM(const string &filename)
 
 void System::SaveKeyFrameTrajectoryTUM(const string &filename)
 {
-    cout << endl << "Saving keyframe trajectory to " << filename << " ..." << endl;
+    LOGD("Saving keyframe trajectory to %s ...", filename.c_str());
 
     vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
@@ -687,7 +693,7 @@ void System::SaveTrajectoryEuRoC(const string &filename)
     vector<Map*> vpMaps = mpAtlas->GetAllMaps();
     int numMaxKFs = 0;
     Map* pBiggerMap;
-    std::cout << "There are " << std::to_string(vpMaps.size()) << " maps in the atlas" << std::endl;
+    LOGD("There are %lu maps in the atlas", vpMaps.size());
     for(Map* pMap :vpMaps)
     {
         std::cout << "  Map " << std::to_string(pMap->GetId()) << " has " << std::to_string(pMap->GetAllKeyFrames().size()) << " KFs" << std::endl;
@@ -1416,6 +1422,7 @@ void System::InsertTrackTime(double& time)
 #endif
 
 void System::SaveAtlas(int type){
+#if defined(WITH_BOOST_SERIALIZATION)
     if(!mStrSaveAtlasToFile.empty())
     {
         //clock_t start = clock();
@@ -1455,10 +1462,13 @@ void System::SaveAtlas(int type){
             cout << "End to write save binary file" << endl;
         }
     }
+#else
+#endif // WITH_BOOST_SERIALIZATION
 }
 
 bool System::LoadAtlas(int type)
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     string strFileVoc, strVocChecksum;
     bool isRead = false;
 
@@ -1517,6 +1527,7 @@ bool System::LoadAtlas(int type)
 
         return true;
     }
+#endif
     return false;
 }
 

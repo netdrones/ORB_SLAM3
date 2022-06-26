@@ -30,9 +30,11 @@
 #include <opencv2/core/core.hpp>
 #include <mutex>
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/map.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 namespace ORB_SLAM3
 {
@@ -43,7 +45,7 @@ class Frame;
 
 class MapPoint
 {
-
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
@@ -101,7 +103,7 @@ class MapPoint
         ar & mfMaxDistance;
 
     }
-
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

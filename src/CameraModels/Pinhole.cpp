@@ -18,7 +18,9 @@
 
 #include "Pinhole.h"
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/export.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 //BOOST_CLASS_EXPORT_IMPLEMENT(ORB_SLAM3::Pinhole)
 

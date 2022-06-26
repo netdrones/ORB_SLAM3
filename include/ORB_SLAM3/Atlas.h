@@ -28,8 +28,10 @@
 
 #include <set>
 #include <mutex>
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/export.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 
 namespace ORB_SLAM3
@@ -48,6 +50,7 @@ class Pinhole;
 
 class Atlas
 {
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
 
     template<class Archive>
@@ -68,6 +71,7 @@ class Atlas
         ar & GeometricCamera::nNextId;
         ar & mnLastInitKFidMap;
     }
+#endif // WITH_BOOST_SERIALIZATION
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

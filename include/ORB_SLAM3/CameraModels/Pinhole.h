@@ -28,6 +28,7 @@
 namespace ORB_SLAM3 {
     class Pinhole : public GeometricCamera {
 
+#if defined(WITH_BOOST_SERIALIZATION)
     friend class boost::serialization::access;
 
     template<class Archive>
@@ -35,6 +36,7 @@ namespace ORB_SLAM3 {
     {
         ar & boost::serialization::base_object<GeometricCamera>(*this);
     }
+#endif // WITH_BOOST_SERIALIZATION
 
     public:
         Pinhole() {

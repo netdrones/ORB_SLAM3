@@ -203,6 +203,8 @@ private:
 
     string CalculateCheckSum(string filename, int type);
 
+    bool initialized_;
+
     // Input sensor
     eSensor mSensor;
 
@@ -228,7 +230,7 @@ private:
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
     LoopClosing* mpLoopCloser;
 
-#ifdef WITH_VIEWER
+#if defined(WITH_VIEWER) && WITH_VIEWER
     // The viewer draws the map and the current camera pose. It uses Pangolin.
     Viewer* mpViewer;
     FrameDrawer* mpFrameDrawer;
@@ -239,7 +241,7 @@ private:
     // The Tracking thread "lives" in the main execution thread that creates the System object.
     std::thread* mptLocalMapping;
     std::thread* mptLoopClosing;
-#ifdef WITH_VIEWER
+#if defined(WITH_VIEWER) && WITH_VIEWER
     std::thread* mptViewer;
 #endif // WITH_VIEWER
     // Reset flag

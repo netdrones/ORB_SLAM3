@@ -19,8 +19,10 @@
 #ifndef SERIALIZATION_UTILS_H
 #define SERIALIZATION_UTILS_H
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 #include <sophus/se3.hpp>
 #include <Eigen/Core>
@@ -33,6 +35,7 @@
 namespace ORB_SLAM3
 {
 
+#if defined(WITH_BOOST_SERIALIZATION)
 template <class Archive>
 void serializeSophusSE3(Archive &ar, Sophus::SE3f &T, const unsigned int version)
 {
@@ -160,6 +163,7 @@ void serializeVectorKeyPoints(Archive& ar, const std::vector<cv::KeyPoint>& vKP,
         *ptr = vKPaux;
     }
 }
+#endif // WITH_BOOST_SERIALIZATION
 
 } // namespace ORB_SLAM3
 

@@ -25,12 +25,14 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
+#if defined(WITH_BOOST_SERIALIZATION)
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/assume_abstract.hpp>
+#endif // WITH_BOOST_SERIALIZATION
 
 #include <sophus/se3.hpp>
 
@@ -41,7 +43,7 @@
 
 namespace ORB_SLAM3 {
     class GeometricCamera {
-
+#if defined(WITH_BOOST_SERIALIZATION)
         friend class boost::serialization::access;
 
         template<class Archive>
@@ -51,7 +53,7 @@ namespace ORB_SLAM3 {
             ar & mnType;
             ar & mvParameters;
         }
-
+#endif // WITH_BOOST_SERIALIZATION
 
     public:
         GeometricCamera() {}
