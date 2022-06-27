@@ -28,6 +28,7 @@
 #include "KannalaBrandt8.h"
 #include "MLPnPsolver.h"
 #include "GeometricTools.h"
+#include "orb_log.h"
 
 #include <iostream>
 
@@ -90,14 +91,14 @@ Tracking::Tracking(
         bool b_parse_cam = ParseCamParamFile(fSettings);
         if(!b_parse_cam)
         {
-            std::cout << "*Error with the camera parameters in the config file*" << std::endl;
+            ORB_LOGE("*Error with the camera parameters in the config file*");
         }
 
         // Load ORB parameters
         bool b_parse_orb = ParseORBParamFile(fSettings);
         if(!b_parse_orb)
         {
-            std::cout << "*Error with the ORB parameters in the config file*" << std::endl;
+            ORB_LOGE("*Error with the ORB parameters in the config file*");
         }
 
         bool b_parse_imu = true;
@@ -106,7 +107,7 @@ Tracking::Tracking(
             b_parse_imu = ParseIMUParamFile(fSettings);
             if(!b_parse_imu)
             {
-                std::cout << "*Error with the IMU parameters in the config file*" << std::endl;
+                ORB_LOGE("*Error with the IMU parameters in the config file*");
             }
 
             mnFramesToResetIMU = mMaxFrames;
@@ -114,7 +115,7 @@ Tracking::Tracking(
 
         if(!b_parse_cam || !b_parse_orb || !b_parse_imu)
         {
-            std::cerr << "**ERROR in the config file, the format is not correct**" << std::endl;
+            ORB_LOGE("**ERROR in the config file, the format is not correct**");
             try
             {
                 throw -1;
@@ -131,21 +132,21 @@ Tracking::Tracking(
     mnNumDataset = 0;
 
     vector<GeometricCamera*> vpCams = mpAtlas->GetAllCameras();
-    std::cout << "There are " << vpCams.size() << " cameras in the atlas" << std::endl;
+    ORB_LOGD("There are %lu cameras in the atlas", vpCams.size());
     for(GeometricCamera* pCam : vpCams)
     {
-        std::cout << "Camera " << pCam->GetId();
+        ORB_LOGD("Camera %d", pCam->GetId());
         if(pCam->GetType() == GeometricCamera::CAM_PINHOLE)
         {
-            std::cout << " is pinhole" << std::endl;
+            ORB_LOGD(" is pinhole");
         }
         else if(pCam->GetType() == GeometricCamera::CAM_FISHEYE)
         {
-            std::cout << " is fisheye" << std::endl;
+            ORB_LOGD(" is fisheye");
         }
         else
         {
-            std::cout << " is unknown" << std::endl;
+            ORB_LOGD(" is unknown");
         }
     }
 
@@ -652,7 +653,7 @@ void Tracking::newParameterLoader(Settings *settings) {
 bool Tracking::ParseCamParamFile(cv::FileStorage &fSettings)
 {
     mDistCoef = cv::Mat::zeros(4,1,CV_32F);
-    cout << endl << "Camera Parameters: " << endl;
+    ORB_LOGD("Camera Parameters: ");
     bool b_miss_params = false;
 
     string sCameraName = fSettings["Camera.type"];

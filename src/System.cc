@@ -76,15 +76,15 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         cout << "Stereo-Inertial" << endl;
     else if(mSensor==IMU_RGBD)
         cout << "RGB-D-Inertial" << endl;
+#else
+    ORB_LOGD("Initialize ORB_SLAM3 system");
 #endif // ANDROID
-
-    LOGD("@@@ ORB_SLAM3::Systems");
 
     //Check settings file
     cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
     if(!fsSettings.isOpened())
     {
-        LOGE("failed to open settings file at: %s", strSettingsFile.c_str());
+        ORB_LOGE("failed to open settings file at: %s", strSettingsFile.c_str());
         return;
     }
 
@@ -126,51 +126,51 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     if(mStrLoadAtlasFromFile.empty())
     {
         //Load ORB Vocabulary
-        LOGD("Loading ORB Vocabulary. This could take a while..." );
+        ORB_LOGD("Loading ORB Vocabulary. This could take a while..." );
 
         mpVocabulary = new ORBVocabulary();
         bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
         if(!bVocLoad)
         {
-            LOGE("Wrong path to vocabulary. Failed to open at: %s", strVocFile.c_str());
+            ORB_LOGE("Wrong path to vocabulary. Failed to open at: %s", strVocFile.c_str());
             return;
         }
-        LOGD("Vocabulary loaded!");
+        ORB_LOGD("Vocabulary loaded!");
 
         //Create KeyFrame Database
         mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
         //Create the Atlas
-        LOGD("Initialization of Atlas from scratch ");
+        ORB_LOGD("Initialization of Atlas from scratch ");
         mpAtlas = new Atlas(0);
     }
     else
     {
         //Load ORB Vocabulary
-        LOGD("Loading ORB Vocabulary. This could take a while...");
+        ORB_LOGD("Loading ORB Vocabulary. This could take a while...");
 
         mpVocabulary = new ORBVocabulary();
         bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
         if(!bVocLoad)
         {
-            LOGE("Wrong path to vocabulary. Falied to open at: %s", strVocFile.c_str());
+            ORB_LOGE("Wrong path to vocabulary. Falied to open at: %s", strVocFile.c_str());
             return;
         }
-        LOGD("Vocabulary loaded!");
+        ORB_LOGD("Vocabulary loaded!");
 
         //Create KeyFrame Database
         mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
-        LOGD("Load File");
+        ORB_LOGD("Load File");
 
         // Load the file with an earlier session
         //clock_t start = clock();
-        LOGD("Initialization of Atlas from file: %s",  mStrLoadAtlasFromFile.c_str());
+        ORB_LOGD("Initialization of Atlas from file: %s",  mStrLoadAtlasFromFile.c_str());
         bool isRead = LoadAtlas(FileType::BINARY_FILE);
 
         if(!isRead)
         {
-            LOGE("Error to load the file, please try with other session file or vocabulary file");
+            ORB_LOGE("Error to load the file, please try with other session file or vocabulary file");
             return;
         }
         //mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
@@ -266,7 +266,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
 {
     if(mSensor!=STEREO && mSensor!=IMU_STEREO)
     {
-        LOGE("ERROR: you called TrackStereo but input sensor was not set to Stereo nor Stereo-Inertial.");
+        ORB_LOGE("ERROR: you called TrackStereo but input sensor was not set to Stereo nor Stereo-Inertial.");
         exit(-1);
     }
 
@@ -350,7 +350,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const
 {
     if(mSensor!=RGBD  && mSensor!=IMU_RGBD)
     {
-        LOGE("ERROR: you called TrackRGBD but input sensor was not set to RGBD.");
+        ORB_LOGE("ERROR: you called TrackRGBD but input sensor was not set to RGBD.");
         exit(-1);
     }
 
@@ -428,7 +428,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
 
     if(mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR)
     {
-        LOGE("ERROR: you called TrackMonocular but input sensor was not set to Monocular nor Monocular-Inertial.");
+        ORB_LOGE("ERROR: you called TrackMonocular but input sensor was not set to Monocular nor Monocular-Inertial.");
         exit(-1);
     }
 
@@ -540,7 +540,7 @@ void System::Shutdown()
         mbShutDown = true;
     }
 
-    LOGD("Shutdown");
+    ORB_LOGD("Shutdown");
 
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
@@ -589,10 +589,10 @@ bool System::isShutDown() {
 
 void System::SaveTrajectoryTUM(const string &filename)
 {
-    LOGD("Saving camera trajectory to %s ...", filename.c_str());
+    ORB_LOGD("Saving camera trajectory to %s ...", filename.c_str());
     if(mSensor==MONOCULAR)
     {
-        LOGE("ERROR: SaveTrajectoryTUM cannot be used for monocular.");
+        ORB_LOGE("ERROR: SaveTrajectoryTUM cannot be used for monocular.");
         return;
     }
 
@@ -649,7 +649,7 @@ void System::SaveTrajectoryTUM(const string &filename)
 
 void System::SaveKeyFrameTrajectoryTUM(const string &filename)
 {
-    LOGD("Saving keyframe trajectory to %s ...", filename.c_str());
+    ORB_LOGD("Saving keyframe trajectory to %s ...", filename.c_str());
 
     vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
@@ -693,7 +693,7 @@ void System::SaveTrajectoryEuRoC(const string &filename)
     vector<Map*> vpMaps = mpAtlas->GetAllMaps();
     int numMaxKFs = 0;
     Map* pBiggerMap;
-    LOGD("There are %lu maps in the atlas", vpMaps.size());
+    ORB_LOGD("There are %lu maps in the atlas", vpMaps.size());
     for(Map* pMap :vpMaps)
     {
         std::cout << "  Map " << std::to_string(pMap->GetId()) << " has " << std::to_string(pMap->GetAllKeyFrames().size()) << " KFs" << std::endl;
