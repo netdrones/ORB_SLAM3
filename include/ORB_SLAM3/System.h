@@ -186,7 +186,7 @@ public:
 
     float GetImageScale();
 
-    inline constexpr eSensor InputSensor() const {
+    inline eSensor get_input_sensor() const {
         return mSensor;
     }
 

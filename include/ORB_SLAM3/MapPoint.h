@@ -211,7 +211,7 @@ public:
 
 protected:    
 
-     // Position in absolute coordinates
+     // CameraPosition in absolute coordinates
      Eigen::Vector3f mWorldPos;
 
      // Keyframes observing the point and associated index in keyframe

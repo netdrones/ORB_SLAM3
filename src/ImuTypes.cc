@@ -178,7 +178,7 @@ void Preintegrated::IntegrateNewMeasurement(const Eigen::Vector3f &acceleration,
 {
     mvMeasurements.push_back(integrable(acceleration,angVel,dt));
 
-    // Position is updated firstly, as it depends on previously computed velocity and rotation.
+    // CameraPosition is updated firstly, as it depends on previously computed velocity and rotation.
     // Velocity is updated secondly, as it depends on previously computed rotation.
     // Rotation is the last to be updated.
 
