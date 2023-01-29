@@ -1545,5 +1545,26 @@ string System::CalculateCheckSum(string filename, int type)
     return checksum;
 }
 
+Sophus::SE3f System::GetWorldPose(const Sophus::SE3f& Trc)
+{
+    auto vpKFs = mpAtlas->GetAllKeyFrames();
+    auto Two = vpKFs[0]->GetPoseInverse();
+    auto pKF = mpTracker->GetLastKeyFrame();
+
+    Sophus::SE3f Trw;
+
+    while (pKF->isBad()) {
+        Trw = Trw * pKF->mTcp;
+        pKF = pKF->GetParent();
+    }
+
+    Trw = Trw * pKF->GetPose() * Two;
+    auto Tcw = Trc * Trw;
+    auto Twc = Tcw.inverse();
+
+    return Twc;
+}
+
+
 } //namespace ORB_SLAM
 

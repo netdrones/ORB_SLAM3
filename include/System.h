@@ -192,6 +192,8 @@ public:
     void InsertTrackTime(double& time);
 #endif
 
+    Sophus::SE3f GetWorldPose(const Sophus::SE3f& Twc);
+
 private:
 
     void SaveAtlas(int type);
