@@ -192,7 +192,9 @@ public:
     void InsertTrackTime(double& time);
 #endif
 
-    Sophus::SE3f GetWorldPose(const Sophus::SE3f& Twc);
+    // Frame pose is stored relative to its reference keyframe. This function transform relative pose to
+    // world reference system.
+    Sophus::SE3f GetWorldPos(const Sophus::SE3f& Tcl);
 
 private:
 

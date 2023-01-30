@@ -1545,26 +1545,42 @@ string System::CalculateCheckSum(string filename, int type)
     return checksum;
 }
 
-Sophus::SE3f System::GetWorldPose(const Sophus::SE3f& Trc)
+Sophus::SE3f System::GetWorldPos(const Sophus::SE3f& Tcl)
 {
-    auto vpKFs = mpAtlas->GetAllKeyFrames();
-    auto Two = vpKFs[0]->GetPoseInverse();
+    auto map = mpAtlas->GetCurrentMap();
+    if (!map) {
+        return Sophus::SE3f();
+    }
+    auto initKF = map->GetOriginKF();
+
+    Sophus::SE3f Twb; // Can be world to cam0 or world to body
+    if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD) {
+        Twb = initKF->GetImuPose();
+    } else {
+        Twb = initKF->GetPoseInverse();
+    }
+
     auto pKF = mpTracker->GetLastKeyFrame();
 
     Sophus::SE3f Trw;
-
     while (pKF->isBad()) {
-        Trw = Trw * pKF->mTcp;
+        Trw = Trw * pKF->mTcp; // mTcp is pose relative to parent keyframe
         pKF = pKF->GetParent();
     }
+    if (!pKF || pKF->GetMap() != map) {
+        return Sophus::SE3f();
+    }
 
-    Trw = Trw * pKF->GetPose() * Two;
-    auto Tcw = Trc * Trw;
-    auto Twc = Tcw.inverse();
+    Trw = Trw * pKF->GetPose() * Twb;
 
-    return Twc;
+    if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD) {
+        auto Twb = (pKF->mImuCalib.mTbc * Tcl * Trw).inverse();
+        return Twb;
+    } else {
+        auto Twc = (Tcl * Trw).inverse();
+        return Twc;
+    }
 }
-
 
 } //namespace ORB_SLAM
 
