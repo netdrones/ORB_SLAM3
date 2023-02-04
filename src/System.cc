@@ -322,7 +322,31 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    return Tcw;
+    // Frame pose is stored relative to its reference keyframe (which is optimized by BA and pose graph).
+    // We need to get first the keyframe pose and then concatenate the relative transformation.
+    if (mpTracker->mCurrentFrame.isSet()) {
+        auto vpKFs = mpAtlas->GetAllKeyFrames();
+        sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
+
+        // Transform all keyframes so that the first keyframe is at the origin.
+        // After a loop closure the first keyframe might not be at the origin.
+        auto Two = vpKFs[0]->GetPoseInverse();
+        auto pKF = mpTracker->mCurrentFrame.mpReferenceKF;
+
+        // If the reference keyframe was culled, traverse the spanning tree to get a suitable keyframe.
+        Sophus::SE3f Trw;
+        while (pKF->isBad()) {
+            Trw = Trw * pKF->mTcp;
+            pKF = pKF->GetParent();
+        }
+
+        Trw = Trw * pKF->GetPose() * Two;
+
+        auto Twc = (Tcw * pKF->GetPoseInverse() * Trw).inverse();
+        return Twc;
+    } else {
+        return Tcw;
+    }
 }
 
 Sophus::SE3f System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)

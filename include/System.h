@@ -192,6 +192,10 @@ public:
     void InsertTrackTime(double& time);
 #endif
 
+    inline eSensor sensor() const {
+        return mSensor;
+    }
+
 private:
 
     void SaveAtlas(int type);

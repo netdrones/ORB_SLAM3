@@ -24,10 +24,10 @@ include_directories(
 )
 
 pybind11_add_module(
-  orb_slam3
-  ${CMAKE_CURRENT_LIST_DIR}/orb_slam3/orb_slam3.cc
+  _orb_slam3
+  ${CMAKE_CURRENT_LIST_DIR}/orb_slam3/system.cc
 )
 target_link_libraries(
-  orb_slam3
+  _orb_slam3
   PRIVATE ORB_SLAM3
 )

@@ -389,4 +389,5 @@ if(realsense2_FOUND)
         target_link_libraries(stereo_inertial_realsense_D435i_old ${PROJECT_NAME})
 endif()
 
+# Python binding
 include("python/CMakeLists.txt")
