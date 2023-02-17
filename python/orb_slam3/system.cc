@@ -11,6 +11,7 @@ namespace orbslam3::python
 
   struct System
   {
+   public:
     System(const std::string &vocFile, const std::string &settingsFile, const int sensor, bool useViewer, int initFr);
 
     py::array_t<double> TrackStereo(const py::array_t<uint8_t> &imLeft,
@@ -30,6 +31,9 @@ namespace orbslam3::python
     bool IsLost();
     bool IsFinished();
     float GetImageScale();
+
+    void SaveAtlas(int type);
+    bool LoadAtlas(int type);
 
   private:
     ORB_SLAM3::System slam_;
