@@ -154,6 +154,16 @@ namespace orbslam3::python
     return slam_.GetImageScale();
   }
 
+  void System::SaveAtlas(int type)
+  {
+    slam_.SaveAtlas(type);
+  }
+
+  bool System::LoadAtlas(int type)
+  {
+    return slam_.LoadAtlas(type);
+  }
+
   PYBIND11_MODULE(_orb_slam3, m)
   {
     m.doc() = "ORB-SLAM3 Python binding";
@@ -178,7 +188,9 @@ namespace orbslam3::python
         .def("get_tracking_state", &System::GetTrackingState)
         .def("is_lost", &System::IsLost)
         .def("is_finished", &System::IsFinished)
-        .def("get_image_scale", &System::GetImageScale);
+        .def("get_image_scale", &System::GetImageScale)
+        .def("save_atlas", &System::SaveAtlas)
+        .def("load_atlas", &System::LoadAtlas);
   }
 
 } // namespace orbslam3::python
