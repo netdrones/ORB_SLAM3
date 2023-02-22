@@ -390,4 +390,4 @@ if(realsense2_FOUND)
 endif()
 
 # Python binding
-include("python/CMakeLists.txt")
+#include("python/CMakeLists.txt")
