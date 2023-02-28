@@ -192,14 +192,14 @@ public:
     void InsertTrackTime(double& time);
 #endif
 
-    // Frame pose is stored relative to its reference keyframe. This function transform relative pose to
-    // world reference system.
-    Sophus::SE3f GetWorldPos(const Sophus::SE3f& Tcl);
-
-private:
+    inline eSensor sensor() const {
+        return mSensor;
+    }
 
     void SaveAtlas(int type);
     bool LoadAtlas(int type);
+
+private:
 
     string CalculateCheckSum(string filename, int type);
 
