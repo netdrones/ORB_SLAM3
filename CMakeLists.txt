@@ -130,7 +130,7 @@ target_link_libraries(${PROJECT_NAME}
 
 include(GNUInstallDirs)
 
-nstall(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
