@@ -40,6 +40,7 @@ endif()
 MESSAGE("OPENCV VERSION:")
 MESSAGE(${OpenCV_VERSION})
 
+
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(realsense2)
@@ -127,6 +128,12 @@ target_link_libraries(${PROJECT_NAME}
         -lcrypto
 )
 
+include(GNUInstallDirs)
+
+nstall(TARGETS ${PROJECT_NAME}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
 # If RealSense SDK is found the library is added and its examples compiled
 if(realsense2_FOUND)
         include_directories(${PROJECT_NAME}
@@ -138,7 +145,7 @@ if(realsense2_FOUND)
 endif()
 
 # Build examples
-if(${ORB_SLAM3_INCLUDE_SAMPLES})
+if(${ORB_SLAM3_BUILD_SAMPLES})
 
 # RGB-D examples
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/RGB-D)
@@ -390,4 +397,4 @@ if(realsense2_FOUND)
         target_link_libraries(stereo_inertial_realsense_D435i_old ${PROJECT_NAME})
 endif()
 
-endif() # ORB_SLAM3_INCLUDE_SAMPLES
+endif() # ORB_SLAM3_SAMPLES
